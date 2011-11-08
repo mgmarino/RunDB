@@ -1,4 +1,0 @@
-from SoudanDB.management import ServerSingleton, CurrentDBSingleton
-from db import BeGeGretinaDB
-ServerSingleton.set_server(BeGeGretinaDB)
-CurrentDBSingleton.set_current_db_module(__name__)
