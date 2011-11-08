@@ -200,6 +200,17 @@ class UpdateDatabaseDocumentClass(MGDocumentClass):
     """
     time_of_last_update = MGDateTimeFieldClass() 
 
+class LockDBClass(MGDocumentClass):
+    """
+      Class saving when the database has been updated.
+      This is useful to save information for external
+      daemons so that they know when the last
+      update has been run.  FixME, use changes feed of
+      couchdb instead of this.
+    """
+    locked = schema.BooleanField() 
+
+
 class RunServerClass(couchdb.client.Server):
     
     """
@@ -261,6 +272,28 @@ class RunServerClass(couchdb.client.Server):
                 break
         update_doc.time_of_last_update = time
         update_doc.store(self.get_database())
+
+    def get_lock(self):
+        if not "lock_doc" in self.get_database():
+            lock_doc = LockDBClass()
+            lock_doc.locked = False
+            lock_doc._set_id("lock_doc")
+            lock_doc.store(self.get_database())
+        lock_doc = LockDBClass.load(self.get_database(), "lock_doc") 
+        if lock_doc.locked: return False
+        lock_doc.locked = True
+        return lock_doc.store(self.get_database())
+
+
+    def reset_lock(self):
+        if not "lock_doc" in self.get_database():
+            lock_doc = LockDBClass()
+            lock_doc.locked = False
+            lock_doc._set_id("lock_doc")
+            lock_doc.store(self.get_database())
+        lock_doc = LockDBClass.load(self.get_database(), "lock_doc") 
+        lock_doc.locked = False
+        return lock_doc.store(self.get_database())
 
 
     def get_database(self):
