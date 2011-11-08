@@ -314,11 +314,9 @@ class RunServerClass(couchdb.client.Server):
         if rundoc:
             rundoc.store(self.get_database())
     
-    def check_and_update_run(self, run_number):
+    def request_add_run(self, run_number):
         """
-          Checks to see if a run exists, and updates it if the modification time
-          of the local files is more recent than the modification time of the 
-          database document.  Deprecated, uses views and update database now. 
+          Checks to see if a run exists in the database, and inserts it if not
         """
         run_doc = self.get_run(run_number)
         if not run_doc:
