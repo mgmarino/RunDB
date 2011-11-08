@@ -6,7 +6,6 @@ import datetime
 import re
 import imp
 from ..views import view_virgin_docs
-from ..views import view_all_accepted_runs
 
 environment_vars={'LD_LIBRARY_PATH' : 
                      "/home/mgmarino/software/OrcaRoot/lib:/home/mgmarino/software/MaGe/lib:/home/mgmarino/software/MGDO/lib:/home/mgmarino/software/root/root_v5.26.00/lib:/home/mgmarino/software/geant4/geant4.9.1.p02/lib/Linux-g++:/home/mgmarino/software/CLHEP/2.0.3.2/lib",\
@@ -23,7 +22,7 @@ def update_rundoc(rundoc):
        program_to_make_next_file
        dest_file
     """
-    from SoudanDB.utilities.utilities import get_hash_of_file
+    from RunDB.utilities.utilities import get_hash_of_file
     rundoc_was_modified = False
     list_to_check = [ ( rundoc.raw_data_file_tier_0,\
                         make_tier1_from_tier0,\
@@ -76,5 +75,4 @@ def update_rundoc(rundoc):
     return (rundoc, rundoc_was_modified)
 
 def get_view():
-    #return view_all_accepted_runs.get_view_class()
     return view_virgin_docs.get_view_class()
