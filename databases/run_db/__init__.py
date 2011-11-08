@@ -1,4 +1,4 @@
-from SoudanDB.management import ServerSingleton, CurrentDBSingleton
-from db import BeGeJCDB
-ServerSingleton.set_server(BeGeJCDB)
+from RunDB.management import ServerSingleton, CurrentDBSingleton
+from db import RunDB
+ServerSingleton.set_server(RunDB)
 CurrentDBSingleton.set_current_db_module(__name__)

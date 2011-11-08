@@ -1,4 +1,4 @@
-from ..management.soudan_database import SoudanServer, get_current_db_module
+from ..management.run_database import RunServer, get_current_db_module
 import pkgutil
 from ..utilities.utilities import detectCPUs
 import os
@@ -30,7 +30,7 @@ def run_update_calc( server_build, alist, update_rundoc):
 
 
 def update_calculations_on_database():
-    server = SoudanServer()
+    server = RunServer()
     
     def my_import(name):
         mod = __import__(name)
@@ -83,7 +83,7 @@ def update_calculations_on_database():
                 del server
                 # The following function calls amod.update_rundoc 
                 # on all the records in alist
-                run_update_calc(SoudanServer, alist, amod.update_rundoc)
+                run_update_calc(RunServer, alist, amod.update_rundoc)
                 sys.exit(0)
                 # stop here for the child process
 

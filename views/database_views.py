@@ -1,4 +1,4 @@
-from SoudanDB.management.soudan_database import SoudanServer 
+from RunDB.management.run_database import RunServer 
 
 def insert_view_into_database(view):
     """
@@ -6,5 +6,5 @@ def insert_view_into_database(view):
     Type of view should be an couchdb.schema.ViewDefinition 
     """
     
-    server = SoudanServer()
+    server = RunServer()
     view.sync(server.get_database())

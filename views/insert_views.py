@@ -1,5 +1,5 @@
 from database_views import insert_view_into_database
-from SoudanDB.management.soudan_database import get_current_db_module 
+from RunDB.management.run_database import get_current_db_module 
 import pkgutil
 
 def insert_views():

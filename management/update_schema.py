@@ -1,8 +1,8 @@
 #!/usr/local/bin/python
 def update_schema():
-    from soudan_database import SoudanServer, RunDocumentClass
+    from run_database import RunServer, RunDocumentClass
 
-    server = SoudanServer()
+    server = RunServer()
     
     for id in server.get_database():
         run_doc = server.get_run(id)
