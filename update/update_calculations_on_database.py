@@ -31,6 +31,9 @@ def run_update_calc( server_build, alist, update_rundoc):
 
 def update_calculations_on_database():
     server = RunServer()
+    if not server.get_lock():
+        print "server locked"
+        return
     
     def my_import(name):
         mod = __import__(name)
@@ -91,6 +94,7 @@ def update_calculations_on_database():
         for thread in thread_list:
             os.waitpid(-1, 0)
 
+    server.reset_lock()
     if must_cycle:
         print "Some documents were updated, cycling again to resolve all updates"
         update_calculations_on_database()
