@@ -84,9 +84,9 @@ def update_database():
     run_db.set_last_update_run(start_run_time)
 
 class RunDocumentClass(MGDocumentClass):
-    raw_data_file_tier_0 = DataFileClass() 
-    root_data_file_tier_1 = DataFileClass() 
-    output_data_file_tier_2 =  DataFileClass()
+    raw_data_file_tier_0 = schema.ListField(DataFileClass()) 
+    root_data_file_tier_1 = schema.ListField(DataFileClass()) 
+    output_data_file_tier_2 =  schema.ListField(DataFileClass())
 
     @classmethod
     def build_document(cls, run_number):
