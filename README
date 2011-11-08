@@ -1,0 +1,9 @@
+This is setup as a generic Run DB, this has been forked from my own SoudanDB
+project:
+
+https://github.com/mgmarino/SoudanDB
+
+but the idea is to make this is a simple as possible, handling saving tiered,
+processed data.  This depends on couchdb-python > 0.8
+
+M. Marino, Nov 2011 
