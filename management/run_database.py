@@ -61,22 +61,11 @@ class DataFileClass(schema.DictField):
     """
     def __init__(self):
         schema.DictField.__init__(self, schema.Mapping.build(
+          server_pfn = schema.TextField(),
           pfn = schema.TextField(),
           lfn = schema.TextField(),
           md5hash = schema.TextField(),
           last_mod_time = MGDateTimeFieldClass()  ))
-
-class AllReducedDataFilesClass(schema.DictField):
-    """
-      Encapsulate reduced data file classes.  This class is 
-      depracated.  Instead use MappingField in couchdb_extensions.
-    """
-
-    def __init__(self):
-        schema.DictField.__init__(self, schema.Mapping.build(
-          pulser = DataFileClass(),
-          low_energy = DataFileClass(),
-          high_energy = DataFileClass() ))
 
 class MGPickleFieldClass(schema.Field):
     """
