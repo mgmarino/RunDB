@@ -33,6 +33,7 @@ def update_rundoc(rundoc):
                 if afile == "": continue
                 doc = {}
                 doc['server_pfn'] = "%s:%s" % (slac_server, afile)
+                doc['download'] = True 
                 alist.append(doc)
             rundoc_was_modified = True
 

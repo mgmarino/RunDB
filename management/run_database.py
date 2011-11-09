@@ -65,6 +65,7 @@ class DataFileClass(schema.DictField):
           pfn = schema.TextField(),
           lfn = schema.TextField(),
           md5hash = schema.TextField(),
+          download = schema.BooleanField(),
           last_mod_time = MGDateTimeFieldClass()  ))
 
 class MGPickleFieldClass(schema.Field):

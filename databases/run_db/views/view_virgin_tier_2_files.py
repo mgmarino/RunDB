@@ -6,7 +6,7 @@ def get_view_class():
         if (doc.output_data_file_tier_2 &&
             doc.output_data_file_tier_2.length != 0) {
             for (var i=0;i<doc.output_data_file_tier_2.length;i++) {
-                if (!doc.output_data_file_tier_2[i].pfn) {
+                if (!doc.output_data_file_tier_2[i].pfn && doc.output_data_file_tier_2[i].download) {
                     emit(doc._id, null);
                     return;
                 }
