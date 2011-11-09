@@ -2,6 +2,10 @@ from RunDB.management.run_database import DataFileClass, \
      RunServerClass, MGPickleFieldClass, MGDocumentClass 
 import couchdb.mapping as schema
 from views import view_all_runs
+from views import view_processing_files
+from views import view_fullyready_tier_2_files
+from views import view_fullyready_tier_1_files
+from views import view_fullyready_both_tiers
 import os
 import re
 import glob
@@ -28,8 +32,29 @@ class RunDB(RunServerClass):
             return self.run_doc_class.load(self.get_database(), str(run_number))
         return None
 
+    def get_fully_ready_runs(self, tiers): 
+        "tiers should be: tier1, tier2, both"
+        retDict = {}
+        if tiers == "tier1":
+            view = view_fullyready_tier_1_files.get_view_class()(self.get_database())
+        elif tiers == "tier2":
+            view = view_fullyready_tier_2_files.get_view_class()(self.get_database())
+        elif tiers == "both":
+            view = view_fullyready_both_tiers.get_view_class()(self.get_database())
+        else: return retDict
+
+        for doc in view:
+            if doc.key not in retDict:
+                retDict[doc.key] = []
+            retDict[doc.key].append(doc.value)
+        return retDict
+
+    def get_processing_files(self):
+        return view_processing_files.get_view_class()(self.get_database())
+
     def get_lfn_path(self):   
         return os.path.expanduser("~/Dropbox/RunData/BeGe")
+    
 
 
 def update_database():
