@@ -18,9 +18,10 @@ def update_rundoc(rundoc):
 
     for adoc in rundoc.output_data_file_tier_2:
         file_loc = adoc.server_pfn
-        if file_loc: 
+        if file_loc and not adoc.pfn: 
             adoc.pfn = download_file(file_loc, rundoc.id) 
             rundoc_was_modified = True
+            break # break because this normally takes a long time
 
     return (rundoc, rundoc_was_modified)
 
