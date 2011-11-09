@@ -11,7 +11,7 @@ from RunDB.utilities import utilities
 import os
 import sys
 from RunDB.management import ServerSingleton, CurrentDBSingleton
-from RunDB.views import view_database_updated_docs
+from RunDB.views import view_database_updated_docs, view_stale_files
 from calendar import timegm
 from time import strptime
 from couchdb_extensions import MappingField
@@ -316,6 +316,16 @@ class RunServerClass(couchdb.client.Server):
             proc_doc.processing_file = afile
             proc_doc.store(self.get_database())
         return ProcessingDBClass.load(self.get_database(), name)
+
+    def get_stale_processing_files(self):
+        return view_stale_files.get_view_class()(self.get_database())
+
+    def remove_stale_processing_files(self):
+        docs = self.get_stale_processing_files()
+        if not docs: return
+        for doc in docs: 
+            self.get_database().__delitem__(doc.id) 
+
 
     def get_database(self):
         """
