@@ -199,6 +199,15 @@ class LockDBClass(MGDocumentClass):
     """
     locked = schema.BooleanField() 
 
+class ProcessingDBClass(MGDocumentClass):
+    """
+      Class saving currently processing files 
+    """
+    processing_file = schema.TextField() 
+    processing_percentage = schema.TextField() 
+    processing_time_left = schema.TextField() 
+
+
 
 class RunServerClass(couchdb.client.Server):
     
@@ -284,6 +293,28 @@ class RunServerClass(couchdb.client.Server):
         lock_doc.locked = False
         return lock_doc.store(self.get_database())
 
+    def remove_processing_file(self, afile):
+        proc_doc = self.get_processing_files_doc(afile)
+        self.get_database().__delitem__(proc_doc.id)
+
+    def add_processing_file(self, afile):
+        self.update_processing_file(afile)
+
+    def update_processing_file(self, afile, percentage="0", time=""):
+        adoc = self.get_processing_files_doc(afile)
+        adoc.processing_time_left = time
+        adoc.processing_percentage = percentage
+        adoc.store(self.get_database())
+
+    def get_processing_files_doc(self, afile):
+        name = "proc_files" + afile
+        name = name.replace("/","_")
+        if not name in self.get_database():
+            proc_doc = ProcessingDBClass()
+            proc_doc._set_id(name)
+            proc_doc.processing_file = afile
+            proc_doc.store(self.get_database())
+        return ProcessingDBClass.load(self.get_database(), name)
 
     def get_database(self):
         """
