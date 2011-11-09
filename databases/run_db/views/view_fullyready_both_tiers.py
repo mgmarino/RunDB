@@ -16,7 +16,5 @@ def get_view_class():
         for (var i=0;i<temp.length;i++) {
             emit(doc._id, [temp[i].pfn, temp1[i].pfn]);
         }
-
-        }
      }
     ''')
