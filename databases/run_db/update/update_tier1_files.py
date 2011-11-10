@@ -7,7 +7,6 @@ import time, re
 import tempfile
 
 locations = ["/exo/scratch2/EXOData", "/exo/scratch0/EXOData"]
-single_use_key = "/home/mgmarino/.ssh/id_slac_single_use"
 
 def download_file(file_loc, run_no):
     location = None 
@@ -21,7 +20,7 @@ def download_file(file_loc, run_no):
         newstat = os.statvfs(loc)
         # Choose the one with more space.
         # This could result in things being scattered, but we don't care
-        if newstat.f_frsize > oldstat.f_frsize: location = loc
+        if newstat.f_bavail > oldstat.f_bavail: location = loc
         
     full_path = os.path.join(location, str(run_no))
     if not os.path.exists(full_path): 
@@ -31,7 +30,7 @@ def download_file(file_loc, run_no):
     RunServer().add_processing_file(complete_path)
     out_file, tmp_name = tempfile.mkstemp()
     print "Running: rsync -avz -P %s %s/ " % (file_loc, full_path)
-    p2 = subprocess.Popen(["rsync", "-avz", "-P", "-e", "ssh -i %s" % single_use_key, file_loc, full_path+"/" ], 
+    p2 = subprocess.Popen(["rsync", "-avz", "-P", file_loc, full_path+"/" ], 
       stdout=out_file, stderr=subprocess.STDOUT) 
     temp = p2.poll()
     while temp == None:

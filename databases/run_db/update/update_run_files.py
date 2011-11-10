@@ -2,7 +2,7 @@
 import subprocess
 from ..views import view_virgin_docs
 
-slac_server = "slac"
+slac_server = "slac-single"
 
 def update_rundoc(rundoc):
     """
@@ -28,6 +28,11 @@ def update_rundoc(rundoc):
             p2 = subprocess.Popen(["ssh", slac_server, query % int(rundoc.id) ], 
               stdout=subprocess.PIPE) 
             output =  p2.communicate()[0]
+            # Check to see if we failed.
+            retVal = p2.returncode
+            if retVal == None or retVal < 0: 
+                print output, retVal 
+                continue
             thelist = output.split('\n')
             for afile in thelist:
                 if afile == "": continue
