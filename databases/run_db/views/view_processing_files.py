@@ -4,7 +4,16 @@ def get_view_class():
     return ViewDefinition("proc", "processing_files", \
     '''function(doc) {
        if (doc.processing_file) { 
-           emit(doc.processing_file.split("/").pop(), parseInt(doc.processing_percentage)+0.5); 
+           var tmp = doc.processing_time_left.split(':');
+           var minutes = 0;
+           if (tmp.length == 3) { 
+             minutes = 60*parseInt(tmp[0]) +
+                       parseInt(tmp[1]) + 
+                       parseInt(tmp[2])/60.;
+           }
+           emit(doc.processing_file.split("/").pop(), 
+             [parseInt(doc.processing_percentage)+0.5, minutes]
+              ); 
            return;
        }
        var tempVar = doc.root_data_file_tier_1;
@@ -13,7 +22,7 @@ def get_view_class():
            for (var i=0;i<tempVar.length;i++) {
                if (tempVar[i].server_pfn &&
                      !tempVar[i].pfn && tempVar[i].download) {
-                   emit(tempVar[i].server_pfn.split("/").pop(), 0);
+                   emit(tempVar[i].server_pfn.split("/").pop(), [0,0]);
                }
            }
        }
@@ -23,7 +32,7 @@ def get_view_class():
            for (var i=0;i<tempVar.length;i++) {
                if (tempVar[i].server_pfn &&
                      !tempVar[i].pfn && tempVar[i].download) {
-                   emit(tempVar[i].server_pfn.split("/").pop(), 0);
+                   emit(tempVar[i].server_pfn.split("/").pop(), [0,0]);
                }
            }
        }
@@ -32,9 +41,12 @@ def get_view_class():
     ''',
     '''
     function(keys, values) {
-       var sum = 0;
-       for (var i=0;i<values.length;i++) {
-           sum += values[i];
+       if (values.length == 0) return 0;
+       var sum = values[0]; 
+       for (var i=1;i<values.length;i++) {
+         for (var j=0;j<values[i].length;j++) {
+             sum[j] += values[i][j];
+         }
        }
        return sum;
     }
