@@ -25,13 +25,13 @@ def RunServer():
 def get_current_db_module():
     return CurrentDBSingleton.get_current_db_module()
 
-majorana_db_server = '127.0.0.1:5984'
+exo_db_server = '10.155.59.15:5984'
 if local_server:  
-    majorana_db_username = ''
-    majorana_db_password = ''
+    db_username = ''
+    db_password = ''
 else:
-    majorana_db_username = 'ewi'
-    majorana_db_password = 'darkma11er'
+    db_username = 'ewi'
+    db_password = 'darkma11er'
 
 """
     Following are a set of fields set up primarily 
@@ -220,9 +220,9 @@ class RunServerClass(couchdb.client.Server):
 
     """
     def __init__(self, db_name, run_doc_class):
-        full_url = "http://" + majorana_db_server 
-        if majorana_db_username != '' and majorana_db_password != '':
-            full_url = ("http://%s:%s@" % (majorana_db_username, majorana_db_password)) + majorana_db_server 
+        full_url = "http://" + exo_db_server 
+        if db_username != '' and db_password != '':
+            full_url = ("http://%s:%s@" % (db_username, db_password)) + exo_db_server 
         couchdb.client.Server.__init__(self, full_url)
         if db_name not in self:
             self.run_db = self.create(db_name)
