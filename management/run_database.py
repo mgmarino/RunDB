@@ -17,7 +17,7 @@ from time import strptime
 from couchdb_extensions import MappingField
 
 local_server = True
-#local_server = False
+local_server = False
 
 def RunServer():
     return ServerSingleton.get_server()
@@ -30,8 +30,8 @@ if local_server:
     db_username = ''
     db_password = ''
 else:
-    db_username = 'ewi'
-    db_password = 'darkma11er'
+    db_username = 'admin'
+    db_password = 'spiderman'
 
 """
     Following are a set of fields set up primarily 
