@@ -8,22 +8,22 @@ import os
 
 class CouchUpdateDaemon(Daemon):
     def wake_up(self):
-        pid = self.get_pid()
-        if not pid:
+        if not self.checkpid():
             self.start()
             pid = self.get_pid()
             if not pid:
                 print "Can't start daemon!"
                 return
-        "Wake the guy up"
-        os.kill(pid, signal.SIGUSR1)
+        #"Wake the guy up"
+        self.signal_daemon(signal.SIGUSR1)
 
     def run(self):
         signal.signal(signal.SIGUSR1, SignalHandler.msg_handler)
         signal.signal(signal.SIGINT, SignalHandler.exit_handler)
-        while SignalHandler.wait_on_msg():
+        while 1:
             print "Processing"
             update_calculations_on_database()
+            if not SignalHandler.wait_on_msg(): break
         print "Exit"
 
 def wake_up():

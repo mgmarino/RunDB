@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import signal 
 import sys, os, time, atexit
+import errno
 
 def get_pid_file():
     return "/exo/scratch0/pid/couchb_update.pid"
@@ -65,6 +66,12 @@ class Daemon:
 		atexit.register(self.delpid)
 		pid = str(os.getpid())
 		file(self.pidfile,'w+').write("%s\n" % pid)
+
+        def checkpid(self):
+            # Check if pid is still running
+            pid = self.get_pid()
+            if not pid: return False
+            return os.path.exists("/proc/%i" % pid)
 	
 	def delpid(self):
                 pid = self.get_pid()
@@ -88,7 +95,7 @@ class Daemon:
                 """
                 Runs a check
                 """
-                if self.get_pid():
+                if self.checkpid():
                      print "Daemon is running"
                 else:
                      print "Daemon is not running"
@@ -104,7 +111,10 @@ class Daemon:
 		if self.get_pid():
 			message = "pidfile %s already exist. Daemon already running?\n"
 			sys.stderr.write(message % self.pidfile)
-			sys.exit(1)
+                        if not self.checkpid():
+			    sys.stderr.write("Daemon not running, deleting pidfile and continue.\n")
+		            if os.path.exists(self.pidfile): os.remove(self.pidfile)
+			else: sys.exit(1)
 		
 		# Start the daemon
 		self.daemonize()
@@ -136,10 +146,13 @@ class Daemon:
 				time.sleep(0.1)
                                 max_tries -= 1
 		except OSError, err:
-			err = str(err)
-			if err.find("No such process") > 0:
+			if err.errno == errno.ESRCH:
 				if os.path.exists(self.pidfile):
 					os.remove(self.pidfile)
+                        elif err.errno == errno.EPERM:
+                            import subprocess
+                            print "It seems you might not have appropriate permissions, try as sudo:"
+                            subprocess.call("sudo python -c 'import os; os.kill(%i, %i)'" % (pid, withsignal), shell=True)
 			else:
 				print str(err)
 				sys.exit(1)
