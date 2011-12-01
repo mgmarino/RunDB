@@ -23,6 +23,7 @@ def update_rundoc(rundoc):
 
     FNULL = None#open("/dev/null",'w')
     for alist, query in list_to_check:
+        already_in_files = [tmp.server_pfn for tmp in alist]
         if query: 
             print "Running: ssh %s %s " % (slac_server, query % int(rundoc.id))
             p2 = subprocess.Popen(["ssh", slac_server, query % int(rundoc.id) ], 
@@ -39,6 +40,11 @@ def update_rundoc(rundoc):
                 doc = {}
                 doc['server_pfn'] = "%s:%s" % (slac_server, afile)
                 doc['download'] = True 
+                if doc['server_pfn'] in already_in_files: continue
+                alist.append(doc)
+            if len(alist) == 0:
+                doc = {}
+                doc['download'] = False 
                 alist.append(doc)
             rundoc_was_modified = True
 
