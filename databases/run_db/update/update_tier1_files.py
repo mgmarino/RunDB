@@ -10,6 +10,7 @@ locations = ["/exo/scratch2/EXOData", "/exo/scratch0/EXOData"]
 
 def download_file(file_loc, run_no):
     location = None 
+    file_name = os.path.basename(file_loc)
     for loc in locations:
         if not os.path.exists(loc): 
             os.makedirs(loc)
@@ -20,7 +21,17 @@ def download_file(file_loc, run_no):
         newstat = os.statvfs(loc)
         # Choose the one with more space.
         # This could result in things being scattered, but we don't care
-        if newstat.f_bavail > oldstat.f_bavail: location = loc
+        tmp_path = os.path.join(loc, str(run_no), file_name)
+        tmp_old_path = os.path.join(location, str(run_no), file_name)
+        if os.path.exists(tmp_path):
+            print tmp_path, "exists"
+            if os.path.exists(tmp_old_path):
+                if os.path.getsize(tmp_path) > os.path.getsize(tmp_old_path):
+                    print "%s > %s" % (tmp_path, tmp_old_path)
+                    location = loc
+            else:
+                location = loc
+        elif not os.path.exists(tmp_old_path) and newstat.f_bavail > oldstat.f_bavail: location = loc
         
     full_path = os.path.join(location, str(run_no))
     if not os.path.exists(full_path): 
