@@ -9,11 +9,13 @@ class SignalHandler:
     def msg_handler(cls, signum, frame):
        # We've received a msg from the user,
        # check the msg semaphore.  
+       print "Recieved signal to wake"
        cls.msg_semaphore.set()
 
     @classmethod
     def exit_handler(cls, signum, frame):
        # We've received a kill msg 
+       print "Recieved signal to shutdown"
        cls.msg_die.set()
 
 
